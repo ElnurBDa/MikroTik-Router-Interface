@@ -19,3 +19,11 @@ Netmiko - https://pynet.twb-tech.com/blog/netmiko-python-library.html
 pip install netmiko
 ```
 
+# To-Do
+- [x] System should retry to connect every 30 seconds
+- [x] Ports and ip address should be able to change
+- [x] Disconnect and connect internet(via firewall rule)
+- [x] Add some other commands like print ip adresses, interface information and so on
+- [x] Enable/ Disable firewall rules 
+- [ ] Activate safe mode
+- [ ] GUI
