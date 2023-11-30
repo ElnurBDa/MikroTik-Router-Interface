@@ -108,12 +108,60 @@ class MikrotikRouter:
         else:
             print('Invalid choice')
 
+    # Firewall
+    def show_firewall_rule(self):
+        print('Showing firewall rule!')
+        command = '/ip firewall filter print'
+        res = self.send_command(command)
+        print(res)
+        return res
+
+    def add_firewall_rule(self):
+        print('Adding firewall rule!')
+        rule = input('Enter rule (default: chain=forward): ') or 'chain=forward'
+        command = f'/ip firewall filter add {rule}'
+        self.send_command(command)
+    
+    def remove_firewall_rule(self):
+        print('Removing firewall rule!')
+        number = input('Enter number: ')
+        command = f'/ip firewall filter remove numbers={number}'
+        self.send_command(command)
+    
+    def disable_firewall_rule(self):
+        print('Disabling firewall rule!')
+        number = input('Enter number: ')
+        command = f'/ip firewall filter disable numbers={number}'
+        self.send_command(command)
+
+    def enable_firewall_rule(self):
+        print('Enabling firewall rule!')
+        number = input('Enter number: ')
+        command = f'/ip firewall filter enable numbers={number}'
+        self.send_command(command)
+    
+    def handle_firewall_rule(self):
+        print('1. Show firewall rule')
+        print('2. Add firewall rule')
+        print('3. Remove firewall rule')
+        print('4. Disable firewall rule')
+        print('5. Enable firewall rule')
+        choice = input('Enter choice: ')
+        if choice == '1':
+            self.show_firewall_rule()
+        elif choice == '2':
+            self.add_firewall_rule()
+        elif choice == '3':
+            self.remove_firewall_rule()
+        elif choice == '4':
+            self.disable_firewall_rule()
+        elif choice == '5':
+            self.enable_firewall_rule()
+        else:
+            print('Invalid choice')
     
 
 
 dev = MikrotikRouter(host='192.168.56.120')
 
-dev.handle_port_change()
-dev.handle_port_change()
-dev.handle_port_change()
-dev.handle_port_change()
+
