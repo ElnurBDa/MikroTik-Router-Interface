@@ -308,7 +308,6 @@ class MikrotikRouter:
                 print('Invalid choice')
 
 
-
 host = input('Enter host: ') or '192.168.56.179'
 port = input('Enter port(default 22): ') or 22
 username = input('Enter username(default admin): ') or 'admin'
