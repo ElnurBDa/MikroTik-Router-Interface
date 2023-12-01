@@ -5,7 +5,7 @@ import sys
 class MikrotikRouter:
     def __init__(self, host, username='admin', password='admin',port=22):
         self.device_type = 'mikrotik_routeros'
-        self.host = host
+        self.host = host 
         self.username = username
         self.password = password
         self.port = port
@@ -307,6 +307,11 @@ class MikrotikRouter:
             else:
                 print('Invalid choice')
 
-dev = MikrotikRouter(host='192.168.56.179')
 
+
+host = input('Enter host: ') or '192.168.56.179'
+port = input('Enter port(default 22): ') or 22
+username = input('Enter username(default admin): ') or 'admin'
+password = input('Enter password(default admin): ') or 'admin'
+dev = MikrotikRouter(host=host, port=port, username=username, password=password)
 dev.main_menu()

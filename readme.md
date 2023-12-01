@@ -19,6 +19,9 @@ Netmiko - https://pynet.twb-tech.com/blog/netmiko-python-library.html
 pip install netmiko
 ```
 
+# Note
+If you get some error related to pattern then check problemsolved.jpg
+
 # To-Do
 - [x] System should retry to connect every 30 seconds
 - [x] Ports and ip address should be able to change
