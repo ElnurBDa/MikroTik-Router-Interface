@@ -28,5 +28,5 @@ If you get some error related to pattern then check problemsolved.jpg
 - [x] Disconnect and connect internet(via firewall rule)
 - [x] Add some other commands like print ip adresses, interface information and so on
 - [x] Enable/ Disable firewall rules 
-- [ ] Activate safe mode
-- [ ] GUI
+- [x] Activate safe mode - https://help.mikrotik.com/docs/display/ROS/Configuration+Management#ConfigurationManagement-SafeMode
+- [ ] GUI - PySimpleGUI

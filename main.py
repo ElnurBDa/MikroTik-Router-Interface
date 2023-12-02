@@ -1,6 +1,7 @@
 from netmiko import ConnectHandler
 from time import sleep
 import sys
+from curses import ascii 
 
 class MikrotikRouter:
     def __init__(self, host, username='admin', password='admin',port=22):
@@ -12,6 +13,7 @@ class MikrotikRouter:
         self.config_set = None
         self.connenction = None
         self.retry(self.connect)
+        self.insafe = False
     
     # Basic
     def connect(self):
@@ -24,7 +26,10 @@ class MikrotikRouter:
         }
         self.connenction = ConnectHandler(**self.config_set)
 
-    def retry(self, method, times=3):
+    def disconnect(self):
+        self.connenction.disconnect()
+
+    def retry(self, method, times=5):
         for i in range(times):
             try:
                 method()
@@ -37,6 +42,15 @@ class MikrotikRouter:
     def send_command(self, command):
         return self.connenction.send_command(command, cmd_verify=False)
     
+    def send_str(self,string):
+        self.connenction.write_channel(string)
+
+    def show_anything(self, command, label):
+        print(f'Showing {label}!')
+        res = self.send_command(command)
+        print(res)
+        return res
+
     # Terminal Handle
     def clean_terminal(self):
         self.wait_line()
@@ -46,16 +60,13 @@ class MikrotikRouter:
         input("\n+-----------------+\n| Press Enter key |\n+-----------------+\n")
 
     def limit_line(self):
-        print('█'*50)
+        if not self.insafe: print('█'*50)
+        else: print('█'*22, 'Safe', '█'*22)
 
     # IP address
     def show_ip_address(self):
-        print('Showing IP address!')
-        command = '/ip address print'
-        res = self.send_command(command)
-        print(res)
-        return res
-
+        return self.show_anything('ip address print', 'IP address')
+    
     def add_ip(self):
         print('Adding IP address!')
         ip_address = input('Enter IP address (N.N.N.N/M): ')
@@ -100,11 +111,7 @@ class MikrotikRouter:
 
     # Port
     def show_port(self):
-        print('Showing port!')
-        command = 'ip service print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('ip service print', 'port')
     
     def change_port(self):
         print('Changing port!')
@@ -135,11 +142,7 @@ class MikrotikRouter:
 
     # Firewall
     def show_firewall_rule(self):
-        print('Showing firewall rule!')
-        command = '/ip firewall filter print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('ip firewall filter print', 'firewall rule')
 
     def add_firewall_rule(self):
         print('Adding firewall rule!')
@@ -193,60 +196,28 @@ class MikrotikRouter:
     
     # Showing some other info about router
     def show_system_resource(self):
-        print('Showing info!')
-        command = '/system resource print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('system resource print', 'system resource')
     
     def show_interface(self):
-        print('Showing interface!')
-        command = '/interface print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('interface print', 'interface')
 
     def show_route(self):
-        print('Showing route!')
-        command = '/ip route print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('ip route print', 'route')
     
     def show_arp(self):
-        print('Showing arp!')
-        command = '/ip arp print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('ip arp print', 'arp')
     
     def show_dns(self):
-        print('Showing dns!')
-        command = '/ip dns print'
-        res = self.send_command(command)
-        print(res)
-        return res
-    
+        return self.show_anything('ip dns print', 'dns')
+
     def show_dhcp(self):
-        print('Showing dhcp!')
-        command = '/ip dhcp-server print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('ip dhcp-server print', 'dhcp')
     
     def show_user(self):
-        print('Showing user!')
-        command = '/user print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('user print', 'user')
     
     def show_log(self):
-        print('Showing log!')
-        command = '/log print'
-        res = self.send_command(command)
-        print(res)
-        return res
+        return self.show_anything('log print', 'log')
     
     def handle_info(self):
         while True:
@@ -283,6 +254,37 @@ class MikrotikRouter:
             else:
                 print('Invalid choice')
     
+    # Safe mode
+    def click_safe_mode(self):
+        if not self.insafe: print('Entering safe mode!')
+        else: print('Exiting safe mode!')
+        self.insafe = not self.insafe
+        self.send_str(ascii.ctrl('x'))
+    
+    def click_undo_changes_in_safe_mode(self):
+        print('Undoing changes in safe mode!')
+        self.send_str(ascii.ctrl('d'))
+        self.insafe = not self.insafe
+        self.disconnect()
+        self.retry(self.connect)
+    
+    def handle_safe_mode(self):
+        while True:
+            self.clean_terminal()
+            print('1. Click safe mode')
+            print('2. Undo changes in safe mode')
+            print('3. Back')
+            choice = input('Enter choice: ')
+            self.limit_line()
+            if choice == '1':
+                self.click_safe_mode()
+            elif choice == '2':
+                self.click_undo_changes_in_safe_mode()
+            elif choice == '3':
+                break
+            else:
+                print('Invalid choice')
+
     # Main menu
     def main_menu(self):
         while True:
@@ -291,7 +293,8 @@ class MikrotikRouter:
             print('2. Handle port')
             print('3. Handle firewall rule')
             print('4. Handle info')
-            print('5. Exit')
+            print('5. Handle safe mode')
+            print('6. Exit')
             choice = input('Enter choice: ')
             self.limit_line()
             if choice == '1':
@@ -303,14 +306,17 @@ class MikrotikRouter:
             elif choice == '4':
                 dev.handle_info()
             elif choice == '5':
+                dev.handle_safe_mode()
+            elif choice == '6':
                 break
             else:
                 print('Invalid choice')
 
 
-host = input('Enter host: ') or '192.168.56.179'
+host = input('Enter host: ') or '192.168.56.199'
 port = input('Enter port(default 22): ') or 22
 username = input('Enter username(default admin): ') or 'admin'
 password = input('Enter password(default admin): ') or 'admin'
+
 dev = MikrotikRouter(host=host, port=port, username=username, password=password)
 dev.main_menu()
