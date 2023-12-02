@@ -1,9 +1,9 @@
 # Description
 This codes aim to work with MikroTik RouterOS.
 
-And anyone who desired to work via more user-friencdly interface now may use this project.
+And anyone who desired to work via more user-friencdly interface now may use this application.
 
-MikroTik-RouterOS-7.3.1.ova - user kernel version other 64x
+MikroTik-RouterOS-7.3.1.ova - use kernel version other 64x
 
 winbox64.exe - https://mikrotik.com/download
 
@@ -15,12 +15,31 @@ give ip address in winbox
 # Install required modules
 Netmiko - https://pynet.twb-tech.com/blog/netmiko-python-library.html
 
+PySimpleGUI - https://www.pysimplegui.org/en/latest/ 
+
 ```cmd
 pip install netmiko
+pip install PySimpleGUI
 ```
 
+# Running it
+```cmd
+# CLI Interface
+python cli_interface.py
+# GUI Interface
+python gui_interface.py
+```
+
+# Features
+- IP Address handling: adding, removing, changing connection IP
+- Port handling: changing port of services, changing connection PORT(ssh's)
+- Firewall rules handling: adding, removing, enabling, disabling
+- Getting info about IP Address, Ports, Interfaces, DNS, DHCP and many other things
+- Safe Mode
+- Sending Any Custom Command
+
 # Note
-If you get some error related to pattern then check problemsolved.jpg
+If you get some error related to patterns then check the problem_solutions folder.
 
 # To-Do
 - [x] System should retry to connect every 30 seconds
