@@ -29,4 +29,4 @@ If you get some error related to pattern then check problemsolved.jpg
 - [x] Add some other commands like print ip adresses, interface information and so on
 - [x] Enable/ Disable firewall rules 
 - [x] Activate safe mode - https://help.mikrotik.com/docs/display/ROS/Configuration+Management#ConfigurationManagement-SafeMode
-- [ ] GUI - PySimpleGUI
+- [x] GUI - PySimpleGUI
